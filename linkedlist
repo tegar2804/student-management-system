@@ -8,7 +8,10 @@ public:
   string jurusan;
   int umur;
 
-  Mahasiswa(string nama, string nim, string jurusan, int umur) {
+  // Konstruktor default
+  Mahasiswa() {}
+
+  Mahasiswa (string nama, string nim, string jurusan, int umur) {
     this->nama = nama;
     this->nim = nim;
     this->jurusan = jurusan;
@@ -22,7 +25,13 @@ public:
   Node* prev;
   Node* next;
 
-  Node(Mahasiswa data) {
+  // Pemanggilan konstruktor default
+  Node () {
+    prev = NULL;
+    next = NULL;
+  }
+
+  Node (Mahasiswa data) {
     this->data = data;
     prev = NULL;
     next = NULL;

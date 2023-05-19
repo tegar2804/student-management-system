@@ -34,8 +34,7 @@ void option(){
     cout << "1. Masukkan Data Mahasiswa" << endl;
     cout << "2. Cari Data Mahasiswa" << endl;
     cout << "3. Tampilkan Semua" << endl;
-    cout << "4. Simpan Perubahan Data Mahasiswa (?)" << endl;
-    cout << "5. Kembali" << endl;
+    cout << "4. Kembali" << endl;
     cout << "Masukkan input anda: " << endl;
 }
 
@@ -109,9 +108,6 @@ int main(){
             cout << "TAMPILIN SEMUA DATA MAHASISWA (SORTED by NIM)" << endl;
         }
         else if(input == "4"){
-            cout << "Perubahan Telah Tersimpan!" << endl;
-        }
-        else if(input == "5"){
             system("cls");
             cout << "Bye!\n" << endl;
             break;

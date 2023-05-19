@@ -20,10 +20,10 @@ int hashmap::keyToValue(string key){
 }
 
 void hashmap::insertElem(student value){
-    struct node *newNode = (struct node *)malloc(sizeof(struct node));
-    newNode->val = value;
-    newNode->right = NULL;
-    newNode->left = NULL;
+    Node* nodeBaru = new Node(value);
+    nodeBaru->data = value;
+    nodeBaru->right = NULL;
+    nodeBaru->left = NULL;
     
     int idx = h(keyToValue(value.getId()));
 

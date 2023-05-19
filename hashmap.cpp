@@ -20,12 +20,12 @@ int hashmap::keyToValue(string key){
 }
 
 void hashmap::insertElem(student value){
-    Node* nodeBaru = new Node(value);
+    Node<student>* nodeBaru = new Node<student>(value);
     nodeBaru->data = value;
     nodeBaru->right = NULL;
     nodeBaru->left = NULL;
     
     int idx = h(keyToValue(value.getId()));
-
+    
     
 }

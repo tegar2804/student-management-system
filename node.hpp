@@ -1,11 +1,12 @@
 #pragma once
 
+template <typename T>
 class Node {
 public:
-  student data;
+  T data;
   Node* left;
   Node* right;
 
   Node ();
-  Node (student);
+  Node (T);
 };

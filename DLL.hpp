@@ -2,14 +2,15 @@
 
 #include "node.hpp"
 
+template <typename T>
 class DoublyLinkedList {
   private:
-    Node* head;
-    Node* tail;
+    Node<T>* head;
+    Node<T>* tail;
   public:
     DoublyLinkedList();
-    void tambahDepan(student);
-    void tambahBelakang(student);
+    void tambahDepan(T);
+    void tambahBelakang(T);
     void hapusDepan();
     void hapusBelakang();
 };

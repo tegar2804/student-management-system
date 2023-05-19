@@ -2,12 +2,14 @@
 #include "node.hpp"
 #include "model.hpp"
 
-Node::Node(){
+template <typename T>
+Node<T>::Node(){
     left = NULL;
     right = NULL;
 }
 
-Node::Node(student data) {
+template <typename T>
+Node<T>::Node(T data) {
   this->data = data;
   left = NULL;
   right = NULL;

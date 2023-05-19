@@ -1,17 +1,17 @@
 #include <iostream>
 #include "model.hpp"
+#include "DLL.hpp"
 using namespace std;
 
-#include "DLL.hpp"
-
-// Pemanggilan konstruktor default
-DoublyLinkedList::DoublyLinkedList() {
+template <typename T>
+DoublyLinkedList<T>::DoublyLinkedList() {
   head = NULL;
   tail = NULL;
 }
 
-void DoublyLinkedList::tambahDepan(student data) {
-  Node* nodeBaru = new Node(data);
+template <typename T>
+void DoublyLinkedList<T>::tambahDepan(T data) {
+  Node<T>* nodeBaru = new Node<T>(data);
   if (head == NULL) {
     head = nodeBaru;
     tail = nodeBaru;
@@ -22,8 +22,9 @@ void DoublyLinkedList::tambahDepan(student data) {
   }
 }
 
-void DoublyLinkedList::tambahBelakang(student data) {
-  Node* nodeBaru = new Node(data);
+template <typename T>
+void DoublyLinkedList<T>::tambahBelakang(T data) {
+  Node<T>* nodeBaru = new Node<T>(data);
   if (tail == NULL) {
     head = nodeBaru;
     tail = nodeBaru;
@@ -34,7 +35,8 @@ void DoublyLinkedList::tambahBelakang(student data) {
   }
 }
 
-void DoublyLinkedList::hapusDepan() {
+template <typename T>
+void DoublyLinkedList<T>::hapusDepan() {
   if (head == NULL) {
     return;
   } else if (head == tail) {
@@ -42,14 +44,15 @@ void DoublyLinkedList::hapusDepan() {
     head = NULL;
     tail = NULL;
   } else {
-    Node* nodeHapus = head;
+    Node<T>* nodeHapus = head;
     head = head->right;
     head->left = NULL;
     delete nodeHapus;
   }
 }
 
-void DoublyLinkedList::hapusBelakang() {
+template <typename T>
+void DoublyLinkedList<T>::hapusBelakang() {
   if (tail == NULL) {
     return;
   } else if (head == tail) {
@@ -57,14 +60,15 @@ void DoublyLinkedList::hapusBelakang() {
     head = NULL;
     tail = NULL;
   } else {
-    Node* nodeHapus = tail;
+    Node<T>* nodeHapus = tail;
     tail = tail->left;
     tail->right = NULL;
     delete nodeHapus;
   }
 }
 
-// void DoublyLinkedList::tampilData() {
+// template <typename T>
+// void DoublyLinkedList<T>::tampilData() {
 //   Node* curr = head;
 //   while (curr != NULL) {
 //     cout << "Nama: " << curr->data.nama << endl;

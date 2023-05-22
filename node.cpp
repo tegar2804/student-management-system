@@ -1,6 +1,5 @@
 #include <iostream>
 #include "node.hpp"
-#include "model.hpp"
 
 template <typename T>
 Node<T>::Node(){
@@ -14,3 +13,5 @@ Node<T>::Node(T data) {
   left = NULL;
   right = NULL;
 }
+
+template class Node<mahasiswa>;

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "model.hpp"
+
 template <typename T>
 class Node {
 public:

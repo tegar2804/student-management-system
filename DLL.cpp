@@ -1,5 +1,4 @@
 #include <iostream>
-#include "model.hpp"
 #include "DLL.hpp"
 using namespace std;
 
@@ -12,6 +11,7 @@ DoublyLinkedList<T>::DoublyLinkedList() {
 template <typename T>
 void DoublyLinkedList<T>::tambahDepan(T data) {
   Node<T>* nodeBaru = new Node<T>(data);
+  
   if (head == NULL) {
     head = nodeBaru;
     tail = nodeBaru;
@@ -25,7 +25,7 @@ void DoublyLinkedList<T>::tambahDepan(T data) {
 template <typename T>
 void DoublyLinkedList<T>::tambahBelakang(T data) {
   Node<T>* nodeBaru = new Node<T>(data);
-  if (tail == NULL) {
+  if (head == NULL) {
     head = nodeBaru;
     tail = nodeBaru;
   } else {
@@ -36,34 +36,33 @@ void DoublyLinkedList<T>::tambahBelakang(T data) {
 }
 
 template <typename T>
-void DoublyLinkedList<T>::hapusDepan() {
-  if (head == NULL) {
-    return;
-  } else if (head == tail) {
-    delete head;
-    head = NULL;
-    tail = NULL;
-  } else {
-    Node<T>* nodeHapus = head;
-    head = head->right;
-    head->left = NULL;
-    delete nodeHapus;
+Node<T>* DoublyLinkedList<T>::cari(string id){
+  Node<T> *temp = head;
+  while(temp->data.getId() != id || temp != NULL){
+    temp = temp->right;
   }
+  
+  return temp;
 }
 
 template <typename T>
-void DoublyLinkedList<T>::hapusBelakang() {
-  if (tail == NULL) {
-    return;
-  } else if (head == tail) {
-    delete tail;
+void DoublyLinkedList<T>::hapus(Node<T>* hapus) {
+  if (head == tail) {
+    delete head;
     head = NULL;
     tail = NULL;
-  } else {
-    Node<T>* nodeHapus = tail;
+  } else if (hapus->left == NULL) {
+    head = head->right;
+    head->left = NULL;
+    delete hapus;
+  } else if (hapus->right == NULL) {
     tail = tail->left;
     tail->right = NULL;
-    delete nodeHapus;
+    delete hapus;
+  } else {
+    hapus->left->right = hapus->right;
+    hapus->right->left = hapus->left;
+    delete hapus;
   }
 }
 

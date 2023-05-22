@@ -2,15 +2,36 @@
 
 #include <iostream>
 
-class student
+class dosen
 {
     private:
         std::string nama, id;
         char gender;
         double ip;
     public:
-        student();
-        void set(std::string, std::string, char, double);
+        // dosen();
+        // dosen(std::string, std::string, char);
+        // void setNama(std::string);
+        // void setId(std::string);
+        // void setGender(char);
+        // void setDosbing(int);
+        // std::string getId();
+};
+
+class mahasiswa
+{
+    private:
+        std::string nama, id;
+        char gender;
+        double ip;
+        dosen dosbing;
+    public:
+        mahasiswa();
+        mahasiswa(std::string, std::string, char);
+        void setNama(std::string);
+        void setId(std::string);
+        void setGender(char);
+        void setDosbing(int);
         std::string getId();
 };
 

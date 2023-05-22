@@ -1,18 +1,31 @@
 #include "model.hpp"
 using namespace std;
 
-student::student(){
-    nama = id = "";
+mahasiswa::mahasiswa(){
+    nama = "";
+    id = "0";
     gender = ' ';
     ip = 0;
 }
 
-void student::set(string name, string nim, char jk, double nilai){
+mahasiswa::mahasiswa(string name, string nim, char jk){
     nama = name;
-    id = id;
+    id = nim;
     gender = jk;
 }
 
-string student::getId(){
+string mahasiswa::getId(){
     return id;
+}
+
+void mahasiswa::setNama(string name){
+    nama = name;
+}
+
+void mahasiswa::setId(string nim){
+    id = nim;
+}
+
+void mahasiswa::setGender(char jk){
+    gender = jk;
 }

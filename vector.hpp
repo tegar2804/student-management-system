@@ -3,19 +3,18 @@
 #include <iostream>
 
 template <typename T>
-class vectorClass{
+class vector{
     private:
         T* arr;
         int capacity;
         int current;
     public:
-        vectorClass();
-        ~vectorClass();
+        vector();
         void push(T);
         void push(T, int);
         T get(int);
         void pop();
         int size();
         int getcapacity();
-        void print();
+        void clear();
 };

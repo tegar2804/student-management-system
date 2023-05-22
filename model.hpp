@@ -7,15 +7,11 @@ class dosen
     private:
         std::string nama, id;
         char gender;
-        double ip;
     public:
-        // dosen();
-        // dosen(std::string, std::string, char);
-        // void setNama(std::string);
-        // void setId(std::string);
-        // void setGender(char);
-        // void setDosbing(int);
-        // std::string getId();
+        dosen();
+        dosen(std::string, std::string, char);
+        std::string getId();
+        std::string getNama();
 };
 
 class mahasiswa
@@ -24,14 +20,14 @@ class mahasiswa
         std::string nama, id;
         char gender;
         double ip;
-        dosen dosbing;
+        dosen* dosbing;
     public:
         mahasiswa();
-        mahasiswa(std::string, std::string, char);
+        mahasiswa(std::string, std::string, char, dosen);
         void setNama(std::string);
         void setId(std::string);
         void setGender(char);
-        void setDosbing(int);
+        void setDosbing(dosen);
         std::string getId();
 };
 

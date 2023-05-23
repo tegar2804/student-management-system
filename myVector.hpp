@@ -3,18 +3,18 @@
 #include <iostream>
 
 template <typename T>
-class vector{
+class myVector{
     private:
         T* arr;
         int capacity;
         int current;
     public:
-        vector();
-        void push(T);
-        void push(T, int);
-        T get(int);
-        void pop();
+        myVector();
+        void push(T*);
+        void push(T*, int);
+        T* get(int);
+        void pop(int);
         int size();
-        int getcapacity();
+        T* search(std::string);
         void clear();
 };

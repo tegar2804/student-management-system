@@ -15,7 +15,6 @@ hashmap::hashmap(){
 int hashmap::keyToValue(string key){
     int n = key.length();
     string ans = key.substr(n-3,3);
-    cout << ans << endl;
     return stoi(ans);
 }
 

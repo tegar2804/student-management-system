@@ -4,7 +4,7 @@
         "ostream": "cpp",
         "iostream": "cpp",
         "xlocale": "cpp",
-        "vector": "cpp",
+        "myVector": "cpp",
         "algorithm": "cpp",
         "atomic": "cpp",
         "bit": "cpp",

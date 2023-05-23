@@ -23,12 +23,13 @@ class mahasiswa
         dosen* dosbing;
     public:
         mahasiswa();
-        mahasiswa(std::string, std::string, char, dosen);
+        mahasiswa(std::string, std::string, char, dosen*);
         void setNama(std::string);
         void setId(std::string);
         void setGender(char);
-        void setDosbing(dosen);
+        void setDosbing(dosen*);
         std::string getId();
+        std::string getNama();
 };
 
 class transkrip

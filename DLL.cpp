@@ -38,7 +38,7 @@ void DoublyLinkedList<T>::tambahBelakang(T data) {
 template <typename T>
 Node<T>* DoublyLinkedList<T>::cari(string id){
   Node<T> *temp = head;
-  while(temp->data.getId() != id || temp != NULL){
+  while(temp != NULL && temp->data.getId() != id){
     temp = temp->right;
   }
   

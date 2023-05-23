@@ -28,15 +28,11 @@ mahasiswa::mahasiswa(){
     ip = 0;
 }
 
-mahasiswa::mahasiswa(string name, string nim, char jk, dosen lec){
+mahasiswa::mahasiswa(string name, string nim, char jk, dosen* lec){
     nama = name;
     id = nim;
     gender = jk;
-    dosbing = &lec;
-}
-
-string mahasiswa::getId(){
-    return id;
+    dosbing = lec;
 }
 
 void mahasiswa::setNama(string name){
@@ -51,6 +47,14 @@ void mahasiswa::setGender(char jk){
     gender = jk;
 }
 
-void mahasiswa::setDosbing(dosen lec){
-    dosbing = &lec;
+void mahasiswa::setDosbing(dosen* lec){
+    dosbing = lec;
+}
+
+string mahasiswa::getId(){
+    return id;
+}
+
+string mahasiswa::getNama(){
+    return nama;
 }

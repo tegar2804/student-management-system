@@ -18,8 +18,8 @@ int hashmap::keyToValue(string key){
     return stoi(ans);
 }
 
-void hashmap::insertElem(mahasiswa value){
-    int idx = h(keyToValue(value.getId()));
+void hashmap::insertElem(mahasiswa *value){
+    int idx = h(keyToValue(value->getId()));
     
     map[idx]->tambahBelakang(value);
     size++;
@@ -31,19 +31,23 @@ Node<mahasiswa>* hashmap::searchElem(string id){
 }
 
 void hashmap::deleteElem(Node<mahasiswa>* hapus){
-    int idx = h(keyToValue(hapus->data.getId()));
+    int idx = h(keyToValue(hapus->data->getId()));
     map[idx]->hapus(hapus);
     size--;
 }
 
 void hashmap::updateName(Node<mahasiswa>* node, string name){
-    node->data.setNama(name);
+    node->data->setNama(name);
 }
 
 void hashmap::updateGender(Node<mahasiswa>* node, char jk){
-    node->data.setGender(jk);
+    node->data->setGender(jk);
+}
+
+int hashmap::getSize(){
+    return size;
 }
 
 // void hashmap::updateDosbing(Node<mahasiswa>* node){
-//     node->data.setNama(name);
+//     node->data->setNama(name);
 // }

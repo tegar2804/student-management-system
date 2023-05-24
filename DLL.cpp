@@ -4,32 +4,19 @@ using namespace std;
 
 template <typename T>
 DoublyLinkedList<T>::DoublyLinkedList() {
-  head = NULL;
-  tail = NULL;
+  head = nullptr;
+  tail = nullptr;
 }
 
 template <typename T>
-void DoublyLinkedList<T>::tambahDepan(T data) {
+void DoublyLinkedList<T>::tambahBelakang(T* data) {
   Node<T>* nodeBaru = new Node<T>(data);
-  
-  if (head == NULL) {
-    head = nodeBaru;
-    tail = nodeBaru;
-  } else {
-    nodeBaru->right = head;
-    head->left = nodeBaru;
-    head = nodeBaru;
-  }
-}
-
-template <typename T>
-void DoublyLinkedList<T>::tambahBelakang(T data) {
-  Node<T>* nodeBaru = new Node<T>(data);
-  if (head == NULL) {
+  if (head == nullptr) {
     head = nodeBaru;
     tail = nodeBaru;
   } else {
     nodeBaru->left = tail;
+    nodeBaru->right = nullptr;
     tail->right = nodeBaru;
     tail = nodeBaru;
   }
@@ -38,7 +25,7 @@ void DoublyLinkedList<T>::tambahBelakang(T data) {
 template <typename T>
 Node<T>* DoublyLinkedList<T>::cari(string id){
   Node<T> *temp = head;
-  while(temp != NULL && temp->data.getId() != id){
+  while(temp != nullptr && temp->data->getId() != id){
     temp = temp->right;
   }
   
@@ -49,15 +36,15 @@ template <typename T>
 void DoublyLinkedList<T>::hapus(Node<T>* hapus) {
   if (head == tail) {
     delete head;
-    head = NULL;
-    tail = NULL;
-  } else if (hapus->left == NULL) {
+    head = nullptr;
+    tail = nullptr;
+  } else if (hapus->left == nullptr) {
     head = head->right;
-    head->left = NULL;
+    head->left = nullptr;
     delete hapus;
-  } else if (hapus->right == NULL) {
+  } else if (hapus->right == nullptr) {
     tail = tail->left;
-    tail->right = NULL;
+    tail->right = nullptr;
     delete hapus;
   } else {
     hapus->left->right = hapus->right;
@@ -65,16 +52,3 @@ void DoublyLinkedList<T>::hapus(Node<T>* hapus) {
     delete hapus;
   }
 }
-
-// template <typename T>
-// void DoublyLinkedList<T>::tampilData() {
-//   Node* curr = head;
-//   while (curr != NULL) {
-//     cout << "Nama: " << curr->data.nama << endl;
-//     cout << "NIM: " << curr->data.nim << endl;
-//     cout << "Jurusan: " << curr->data.jurusan << endl;
-//     cout << "Umur: " << curr->data.umur << endl;
-//     cout << endl;
-//     curr = curr->right;
-//   }
-// }

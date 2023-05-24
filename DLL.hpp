@@ -10,8 +10,7 @@ class DoublyLinkedList {
     Node<T> *tail;
   public:
     DoublyLinkedList();
-    void tambahDepan(T);
-    void tambahBelakang(T);
+    void tambahBelakang(T*);
     Node<T>* cari(std::string);
     void hapus(Node<T>*);
 };

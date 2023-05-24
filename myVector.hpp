@@ -13,7 +13,7 @@ class myVector{
         void push(T*);
         void push(T*, int);
         T* get(int);
-        void pop(int);
+        void remove(std::string);
         int size();
         T* search(std::string);
         void clear();

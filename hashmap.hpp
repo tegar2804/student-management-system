@@ -13,15 +13,11 @@ class hashmap
     public:
         hashmap();
         int keyToValue(std::string);
-        void insertElem(mahasiswa); // input
+        void insertElem(mahasiswa*); // input
         Node<mahasiswa>* searchElem(std::string); // search
         void deleteElem(Node<mahasiswa>*); // delete
         void updateName(Node<mahasiswa>*, std::string);
         void updateGender(Node<mahasiswa>*, char);
         void updateDosbing(Node<mahasiswa>*, int);
-        // void addKRS(Node<mahasiswa>*, int);
-        // void updateKRS(Node<mahasiswa>*, int);
-        // void deleteKRS(Node<mahasiswa>*, int);
-        // void traverse(); // status + all mhs
-        // writeFile
+        int getSize();
 };

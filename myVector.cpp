@@ -40,15 +40,44 @@ void myVector<T>::push(T* data, int index)
 template <typename T>
 T* myVector<T>::get(int index)
 {
-    if(index == -1) return NULL;
+    if(index < 0 || index > current) return nullptr;
     return &arr[index];
 }
 
-// benerin
 template <typename T>
-void myVector<T>::pop(int idx) { 
-    current--; 
+void myVector<T>::remove(string id) {
+    int index = current;
+    for (int i = 0; i < current; i++){
+        if(arr[i].getId().compare(id) == 0){
+            index = i;
+            break;
+        }
+    }
+
+    for (int i = index; i < current - 1; i++) {
+        arr[i] = arr[i + 1];
+    }
+    if(index <= current) current--;
 }
+
+template <>
+void myVector<string>::remove(string id) {
+    int index = current;
+    for (int i = 0; i < current; i++){
+        if(arr[i].compare(id) == 0){
+            index = i;
+            break;
+        }
+    }
+
+    for (int i = index; i < current - 1; i++) {
+        arr[i] = arr[i + 1];
+    }
+    if(index <= current) current--;
+}
+
+template <>
+void myVector<myVector<string>>::remove(string id){}
 
 template <typename T>
 int myVector<T>::size() {
@@ -58,10 +87,11 @@ int myVector<T>::size() {
 template <typename T>
 T* myVector<T>::search(string id) {
     for(int i = 0; i < current; i++){
-        if(arr[i].getId() == id)
+        if(arr[i].getId() == id){
             return &arr[i];
+        }
     }
-    return NULL;
+    return nullptr;
 }
 
 template <>
@@ -70,12 +100,12 @@ string* myVector<string>::search(string id) {
         if(arr[i] == id)
             return &arr[i];
     }
-    return NULL;
+    return nullptr;
 }
 
 template <>
 myVector<string>* myVector<myVector<string>>::search(string id) {
-    return NULL;
+    return nullptr;
 }
 
 template <typename T>
@@ -84,5 +114,8 @@ void myVector<T>::clear(){
 }
 
 template class myVector<dosen>;
+template class myVector<matkul>;
+template class myVector<mahasiswa>;
+template class myVector<transkrip>;
 template class myVector<string>;
 template class myVector<myVector<string>>;

@@ -3,15 +3,18 @@
 
 template <typename T>
 Node<T>::Node(){
-    left = NULL;
-    right = NULL;
+    left = nullptr;
+    right = nullptr;
 }
 
 template <typename T>
-Node<T>::Node(T data) {
+Node<T>::Node(T* data) {
   this->data = data;
-  left = NULL;
-  right = NULL;
+  left = nullptr;
+  right = nullptr;
 }
 
 template class Node<mahasiswa>;
+template class Node<dosen>;
+template class Node<matkul>;
+template class Node<transkrip>;

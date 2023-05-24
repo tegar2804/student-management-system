@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include "myVector.hpp"
 
 class dosen
 {
@@ -12,6 +13,35 @@ class dosen
         dosen(std::string, std::string, char);
         std::string getId();
         std::string getNama();
+        char getJk();
+};
+
+class matkul
+{
+    private:
+        std::string nama, id;
+        int sks;
+    public:
+        matkul();
+        matkul(std::string, std::string, int);
+        std::string getId();
+        std::string getNama();
+        int getSKS();
+};
+
+class transkrip
+{
+    private:
+        std::string id;
+        matkul *kode;
+        std::string mutu;
+    public:
+        transkrip();
+        transkrip(std::string, matkul*, std::string);
+        matkul* getMatkul();
+        std::string getId();
+        double getMutuDouble();
+        std::string getMutuChar();
 };
 
 class mahasiswa
@@ -21,41 +51,21 @@ class mahasiswa
         char gender;
         double ip;
         dosen* dosbing;
+        myVector<transkrip>* krs;
     public:
         mahasiswa();
-        mahasiswa(std::string, std::string, char, dosen*);
+        mahasiswa(std::string, std::string, char, dosen*, myVector<transkrip>*);
+        void recount_IP();
         void setNama(std::string);
         void setId(std::string);
         void setGender(char);
         void setDosbing(dosen*);
         std::string getId();
         std::string getNama();
-};
-
-class transkrip
-{
-    private:
-        std::string nim, kode;
-    public:
-        transkrip(){
-            nim = kode = "";
-        }
-        void set(std::string nrp, std::string id){
-            nim = nrp;
-            kode = id;
-        }
-};
-
-class matkul
-{
-    private:
-        std::string nama, kode;
-    public:
-        matkul(){
-            nama = kode = "";
-        }
-        void set(std::string name, std::string id){
-            nama = name;
-            kode = id;
-        }
+        void addKRS(transkrip*);
+        void deleteKRS(std::string);
+        char getJk();
+        double getIP();
+        dosen* getDosbing();
+        myVector<transkrip>* getKRS();
 };

@@ -163,6 +163,7 @@ int main(){
             size_t pos2 = table->get(i)->get(j)->find(")");
             string code = table->get(i)->get(j)->substr(0,pos1);
             string val = table->get(i)->get(j)->substr(pos1+1,pos2-pos1-1);
+            if(code.length() <= 1 && (val != "BL" || val != "A" || val != "AB" || val != "B" || val != "BC" || val != "C" || val != "D" || val != "E")) break;
             transkrip *temp = new transkrip(*table->get(i)->get(0), course->searchNode(course->get_root(), code)->data, val);
             list_krs->push(temp);
         }
@@ -336,13 +337,13 @@ int main(){
                                 if(data->getKRS()->get(0)->getMutuDouble() >= 1){
                                     cout << 1 << ". " << data->getKRS()->get(0)->getMatkul()->getNama() << " (" << data->getKRS()->get(0)->getId() << ")    " << GREEN << "[tuntas|" << data->getKRS()->get(0)->getMutuChar() << "]" << RESET << endl;
                                 }else{
-                                    cout << 1 << ". " << data->getKRS()->get(0)->getMatkul()->getNama() << " (" << data->getKRS()->get(0)->getId() << ")    " << RED << "[belum tuntas| " << data->getKRS()->get(0)->getMutuChar() << "]" << RESET << endl;
+                                    cout << 1 << ". " << data->getKRS()->get(0)->getMatkul()->getNama() << " (" << data->getKRS()->get(0)->getId() << ")    " << RED << "[belum tuntas|" << data->getKRS()->get(0)->getMutuChar() << "]" << RESET << endl;
                                 }
                                 for(int i = 1; i < data->getKRS()->size(); i++){
                                     if(data->getKRS()->get(i)->getMutuDouble() >= 1){
                                         cout << "                       " << i+1 << ". " << data->getKRS()->get(i)->getMatkul()->getNama() << " (" << data->getKRS()->get(i)->getId() << ")    " << GREEN << "[tuntas|" << data->getKRS()->get(i)->getMutuChar() << "]" << RESET << endl;
                                     }else{
-                                        cout << "                       " << i+1 << ". " << data->getKRS()->get(i)->getMatkul()->getNama() << " (" << data->getKRS()->get(i)->getId() << ")    " << RED << "[belum tuntas| " << data->getKRS()->get(i)->getMutuChar() << "]" << RESET << endl;
+                                        cout << "                       " << i+1 << ". " << data->getKRS()->get(i)->getMatkul()->getNama() << " (" << data->getKRS()->get(i)->getId() << ")    " << RED << "[belum tuntas|" << data->getKRS()->get(i)->getMutuChar() << "]" << RESET << endl;
                                     }
                                 }
                             }
@@ -419,10 +420,10 @@ int main(){
                                     }
                                     else cout << BLUE << i+1 << ". " << RESET << list_dosen->get(i)->getNama() << " (" << list_dosen->get(i)->getId() << ")" << endl;
                                 }
+                                cout << RED << "0. " << RESET << "hapus dosen pembimbing" << endl;
                                 if(!data->getDosbing()){
                                     cout << YELLOW << "<< status: belum punya dosen pembimbing >>" << RESET << endl << endl;
                                 }else{
-                                    cout << RED << "0. " << RESET << "hapus dosen pembimbing" << endl;
                                     cout << GREEN << "<< status: dosen pembimbing kamu saat ini " << data->getDosbing()->getNama() << " (" << data->getDosbing()->getId() << ") >>" << RESET << endl << endl;
                                 } 
     
@@ -566,7 +567,7 @@ int main(){
                                     data_mhs->push(&row);
                                 }
                                 {
-                                string row = "+ IP                 : " + to_string(data->getIP());
+                                string row = "+ IP                 : " + to_string(data->getIP()).substr(0,4);
                                 data_mhs->push(&row);
                                 }
                                 if(data->getKRS()->size() == 0){
@@ -602,7 +603,13 @@ int main(){
                                 cout << GREEN << "| Berhasil Mencetak Data |" << RESET << endl;
                                 cout << YELLOW << "> Silahkan Cek File \"" << RED << filename << ".txt" << YELLOW << "\"" << RESET << endl;
                                 cout << YELLOW << "> Tutup file untuk kembali!" << endl;
-                                string command = "gedit " + filename + ".txt";
+                                
+                                string command;
+                                #ifdef _WIN32
+                                    command = "notepad " + filename + ".txt";
+                                #else
+                                    command = "gedit " + filename + ".txt";
+                                #endif
                                 system(command.c_str());
                                 banner();
                                 cin.clear();
@@ -696,7 +703,12 @@ int main(){
                     cout << GREEN << "| Berhasil Mencetak Data |" << RESET << endl;
                     cout << YELLOW << "> Silahkan Cek File \"" << RED << filename << ".txt" << YELLOW << "\"" << RESET << endl;
                     cout << YELLOW << "> Tutup file untuk kembali ke menu utama!" << endl;
-                    string command = "gedit " + filename + ".txt";
+                    string command;
+                    #ifdef _WIN32
+                        command = "notepad " + filename + ".txt";
+                    #else
+                        command = "gedit " + filename + ".txt";
+                    #endif
                     system(command.c_str());
                     banner();
                     cin.clear();

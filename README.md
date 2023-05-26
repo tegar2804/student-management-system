@@ -20,5 +20,7 @@ Proyek akhir mata kuliah Struktur Data
 - run
 
     `$ ./app`
+    
+    or
 
-
+    `$ app.exe`

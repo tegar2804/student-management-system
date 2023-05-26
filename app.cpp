@@ -5,6 +5,19 @@
 #include <unistd.h>
 #endif
 
+#define RESET   "\033[0m"
+#define BLACK   "\033[0;1m"
+#define DARK_RED     "\033[0;31m"
+#define RED     "\033[31;1m"
+#define DARK_GREEN   "\033[0;32m"
+#define GREEN   "\033[32;1m"
+#define DARK_YELLOW  "\033[0;33m"
+#define YELLOW  "\033[33;1m"
+#define BLUE    "\033[34;1m"
+#define MAGENTA "\033[35;1m"
+#define CYAN    "\033[36;1m"
+#define WHITE   "\033[37;1m"
+
 #include <iostream>
 #include <cstdlib>
 #include <stdlib.h>
@@ -13,6 +26,8 @@
 #include <sstream>
 #include <limits>
 #include <ctime>
+#include <chrono>
+#include <thread>
 #include <sys/stat.h>
 
 #include "model.hpp"
@@ -22,26 +37,34 @@
 
 using namespace std;
 
+void clear_terminal(){
+    #ifdef _WIN32
+        system("cls");
+    #else
+        system("clear");
+    #endif
+}
+
 void banner(){
-    cout << "||========================================================|| " << endl;
-    cout << "|| __          ________ _      _____ ____  __  __ ______  || " << endl;
-    cout << "|| \\ \\        / /  ____| |    / ____/ __ \\|  \\/  |  ____| || " << endl;
-    cout << "||  \\ \\  /\\  / /| |__  | |   | |   | |  | | \\  / | |__    || " << endl;
-    cout << "||   \\ \\/  \\/ / |  __| | |   | |   | |  | | |\\/| |  __|   || " << endl;
-    cout << "||    \\  /\\  /  | |____| |___| |___| |__| | |  | | |____  || " << endl;
-    cout << "||     \\/  \\/   |______|______\\_____\\____/|_|  |_|______| || " << endl;
-    cout << "||========================================================|| " << endl;
+    clear_terminal();
+    cout << BLUE << "\t\t=========================================================================" << endl;
+    cout << CYAN << "\t\t   _____ __            __           __     ___                           " << endl;
+    cout << CYAN << "\t\t  / ___// /___  ______/ /__  ____  / /_   /   | _____________  __________" << endl;
+    cout << CYAN << "\t\t  \\__ \\/ __/ / / / __  / _ \\/ __ \\/ __/  / /| |/ ___/ ___/ _ \\/ ___/ ___/" << endl;
+    cout << CYAN << "\t\t ___/ / /_/ /_/ / /_/ /  __/ / / / /_   / ___ / /__/ /__/  __(__  |__  ) " << endl;
+    cout << CYAN << "\t\t/____/\\__/\\__,_/\\__,_/\\___/_/ /_/\\__/  /_/  |_\\___/\\___/\\___/____/____/  " << endl;
     cout << endl;
-    cout << "Student Management System " << endl;    
+    cout << BLUE << "\t\t=======================" << CYAN << " Student Management System " << BLUE << "=======================" << RESET << endl;
+    cout << endl;
 }
 
 
 void menu(){
-    cout << endl;
-    cout << "1. Masukkan Data Mahasiswa" << endl;
-    cout << "2. Telusuri Data Mahasiswa" << endl;
-    cout << "3. Tampilkan Semua" << endl;
-    cout << "4. Simpan Dan Keluar" << endl;
+    cout << MAGENTA << "<<" << RESET << " MENU UTAMA " << MAGENTA << ">>" << RESET << endl;
+    cout << CYAN << "1) " << RESET << "Masukkan Data Mahasiswa" << endl;
+    cout << CYAN << "2) " << RESET << "Cari Data Mahasiswa" << endl;
+    cout << CYAN << "3) " << RESET << "Tampilkan Semua Data Mahasiswa" << endl;
+    cout << RED << "0) " << RESET << "Simpan Dan Keluar" << RESET << endl;
     cout << "Masukkan input anda: " << endl;
 }
 
@@ -143,8 +166,9 @@ int main(){
             transkrip *temp = new transkrip(*table->get(i)->get(0), course->searchNode(course->get_root(), code)->data, val);
             list_krs->push(temp);
         }
-        
-        dosen* dosbing = lec->searchNode(lec->get_root(), *table->get(i)->get(3))->data;
+        Node<dosen>* node_dosbing = lec->searchNode(lec->get_root(), *table->get(i)->get(3));
+        dosen* dosbing = nullptr;
+        if(node_dosbing) dosbing = node_dosbing->data;
         mahasiswa *temp = new mahasiswa(*table->get(i)->get(0), *table->get(i)->get(1), (*table->get(i)->get(2))[0], dosbing, list_krs);
         mhs->insertElem(temp);
         mhs_sorted->update_root(mhs_sorted->insert(mhs_sorted->get_root(), temp));
@@ -155,22 +179,22 @@ int main(){
         menu();
         cout << ">> ";
         cin >> input;
+        clear_terminal();
         if(input == "1"){
-            cout << "INPUT DATA MAHASISWA" << endl;
-            cout << "====================" << endl;
+            banner();
+            cout << MAGENTA << "<<" << RESET << " INPUT DATA MAHASISWA " << MAGENTA << ">>" << RESET << endl;
             string name, nim;
             char gender;
             int dosbing, krs;
 
             while(true){
-                cout << "Masukkan Nama: ";
-                char ch;
+                cout << BLUE << "+" << RESET << " Masukkan Nama: ";
                 cin.ignore();
                 getline(cin, name);
-                if(!isLen(name)) cout << endl << "Input nama minimal mengandung 3 karakter!" << endl << endl;
+                if(!isLen(name)) cout << RED << endl << "| Input nama minimal mengandung 3 karakter! |" << RESET << endl << endl;
                 else if(name.length() > 45){
                     name = name.substr(0, 45);
-                    cout << endl << "Input maksimal 45 karakter!" << endl << endl;
+                    cout << YELLOW << endl << "| Input hanya menerima 45 karakter pertama! |" << RESET << endl << endl;
                     break;
                 }else{
                     cout << endl;
@@ -179,14 +203,14 @@ int main(){
             }
             
             while(true){
-                cout << "Masukkan NIM: ";
+                cout << BLUE << "+" << RESET << " Masukkan NIM: ";
                 getline(cin, nim);
-                if(!isLen(nim)) cout << endl << "Input nama minimal mengandung 3 karakter!" << endl << endl;
-                else if(!isId(nim)) cout << endl << "Input harus merupakan format nim (ex: X0123456)!" << endl << endl;
-                else if(mhs->searchElem(nim)) cout << endl << "NIM sudah pernah digunakan!" << endl << endl;
+                if(!isLen(nim)) cout << RED << endl << "| Input nama minimal mengandung 3 karakter! |" << RESET << endl << endl;
+                else if(!isId(nim)) cout << RED << endl << "| Input harus merupakan format nim (ex: X0123456)! |" << RESET << endl << endl;
+                else if(mhs->searchElem(nim)) cout << RED << endl << "| NIM sudah pernah digunakan! |" << RESET << endl << endl;
                 else if(nim.length() > 15){
                     nim = nim.substr(0, 15);
-                    cout << endl << "Input maksimal 15 karakter!" << endl << endl;
+                    cout << endl << YELLOW << "| Input maksimal 15 karakter! |" << RESET << endl << endl;
                     break;
                 }else{
                     cout << endl;
@@ -196,12 +220,12 @@ int main(){
 
             while(true){
                 int temp;
-                cout << "Pilih Jenis Kelamin:" << endl; 
-                cout << "1. Laki-laki \t2. Perempuan" << endl;
+                cout << BLUE << "+" << RESET << " Pilih Jenis Kelamin:"; 
+                cout << "\n" << CYAN << "(1) " << RESET << "Laki-laki\n" << MAGENTA << "(2) " << RESET << "Perempuan" << endl;
                 cout << ">> ";
                 cin >> temp;
                 if(temp != 1 && temp != 2){
-                    cout << endl << "Input tidak valid!" << endl << endl ;
+                    cout << endl << RED << "| Input tidak valid! |" << RESET << endl << endl ;
                     cin.clear();
                     cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 }else{
@@ -215,23 +239,23 @@ int main(){
             myVector<dosen> *list_dosen = lec->inorder(lec->get_root());
             while(true){
                 int qt = list_dosen->size();
-                cout << "Pilih Dosen Pembimbing:" << endl;
+                cout << BLUE << "+" << RESET << " Pilih Dosen Pembimbing:" << endl;
                 for(int i = 0; i < qt; i++){
-                    cout << i+1 << ". " << list_dosen->get(i)->getNama() << " (" << list_dosen->get(i)->getId() << ")" << endl;
+                    cout << CYAN << i+1 << ". " << RESET << list_dosen->get(i)->getNama() << " (" << list_dosen->get(i)->getId() << ")" << endl;
                 }
-                cout << "0. Belum memiliki Dosen Pembimbing" << endl;
+                cout << RED << "0."<< RESET << " Belum memiliki Dosen Pembimbing" << endl;
                 cout << ">> ";
                 cin >> dosbing;
                 if(dosbing > 0 && dosbing <= qt){
                     cout << endl;
                     break;
                 }else if(dosbing == 0){
-                    cout << "Data Dosen Pembimbing Dikosongkan" << endl;
+                    cout << YELLOW << "| Data Dosen Pembimbing Dikosongkan |" << RESET << endl;
                     cin.clear();
                     cin.ignore(numeric_limits<streamsize>::max(), '\n');
                     break;
                 } else{
-                    cout << endl << "Input tidak valid!" << endl << endl ;
+                    cout << endl << RED << "| Input tidak valid! |" << RESET << endl << endl ;
                     cin.clear();
                     cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 }
@@ -240,102 +264,121 @@ int main(){
             mahasiswa *val = new mahasiswa(name, nim, gender, list_dosen->get(dosbing-1), new myVector<transkrip>());
             mhs->insertElem(val);
             mhs_sorted->update_root(mhs_sorted->insert(mhs_sorted->get_root(), val));
-            cout << "Berhasil Menambahkan Data Mahasiswa!" << endl;
+
+            cout << GREEN << "| Berhasil Menambahkan Data Mahasiswa! |" << endl << endl;
+            cout << YELLOW << "> MOHON TUNGGU!" << endl;
+            #ifdef _WIN32
+                Sleep(2000);
+            #else
+                sleep(2);
+            #endif
+            banner();
         }
         else if(input == "2"){
+            banner();
             while(true){
                 try{
+                    cout << MAGENTA << "<<" << RESET << " CARI DATA MAHASISWA " << MAGENTA << ">>" << RESET << endl;
                     string search;
                     Node<mahasiswa>* node;
-                    cout << "Masukkan NIM yang ingin dicari: ";
+                    cout << YELLOW << "\n ====== Tekan \"" << RED << "Q" << YELLOW << "\" untuk kembali ke menu utama! ====== " << RESET << endl << endl;
+                    cout << BLUE << "+" << RESET << " Masukkan NIM yang ingin dicari: ";
                     cin >> search;
                     if(search == "q" || search == "Q"){
-                        break;                    
+                        banner();
+                        break;
                     }else if(node = mhs->searchElem(search)){
                         mahasiswa *data = node->data;
                         int opt;
                         while(true){
-                            cout << endl;
-                            cout << "Nama Lengkap       : " << data->getNama() << endl;
-                            cout << "NIM                : " << data->getId() << endl;
-                            cout << "Jenis Kelamin      : " << ((data->getJk() == 'L') ? "Laki-laki" : "Perempuan") << endl;
+                            banner();
+                            cout << MAGENTA << "<<" << RESET << " CARI DATA MAHASISWA " << MAGENTA << ">>" << RESET << endl << endl;
+                            cout << BLUE << "+" << RESET << " Masukkan NIM yang ingin dicari: " << data->getId() << endl;
+                            cout << "------------------------------------------------------------------------------------------------------------" << endl;
+                            cout << BLUE << "+ " << RESET << "Nama Lengkap       : " << data->getNama() << endl;
+                            cout << BLUE << "+ " << RESET << "NIM                : " << data->getId() << endl;
+                            cout << BLUE << "+ " << RESET << "Jenis Kelamin      : " << ((data->getJk() == 'L') ? "Laki-laki" : "Perempuan") << endl;
                             if(data->getDosbing()){
-                                cout << "Dosen Pembimbing   : " << data->getDosbing()->getNama() << " (" << data->getDosbing()->getId() << ")" << endl;
+                                cout << BLUE << "+ " << RESET << "Dosen Pembimbing   : " << data->getDosbing()->getNama() << " (" << data->getDosbing()->getId() << ")" << endl;
                             }else{
-                                cout << "Dosen Pembimbing   : -" << endl;
+                                cout << BLUE << "+ " << RESET << "Dosen Pembimbing   : -" << endl;
                             }
+                            cout << BLUE << "+ " << RESET;
                             printf("IP                 : %.2f \n", data->getIP());
                             if(data->getKRS()->size() == 0){
-                                cout << "KRS                : - " << endl;
+                                cout << BLUE << "+ " << RESET << "Rekapitulasi Studi : - " << endl;
                             }else{
-                                cout << "KRS                : ";
+                                cout << BLUE << "+ " << RESET << "Rekapitulasi Studi : ";
                                 if(data->getKRS()->get(0)->getMutuDouble() >= 1){
-                                    cout << 1 << ". " << data->getKRS()->get(0)->getMatkul()->getNama() << " (" << data->getKRS()->get(0)->getId() << ")    [tuntas|" << data->getKRS()->get(0)->getMutuChar() << "]" << endl;
+                                    cout << 1 << ". " << data->getKRS()->get(0)->getMatkul()->getNama() << " (" << data->getKRS()->get(0)->getId() << ")    " << GREEN << "[tuntas|" << data->getKRS()->get(0)->getMutuChar() << "]" << RESET << endl;
                                 }else{
-                                    cout << 1 << ". " << data->getKRS()->get(0)->getMatkul()->getNama() << " (" << data->getKRS()->get(0)->getId() << ")    [belum tuntas| " << data->getKRS()->get(0)->getMutuChar() << "]" << endl;
+                                    cout << 1 << ". " << data->getKRS()->get(0)->getMatkul()->getNama() << " (" << data->getKRS()->get(0)->getId() << ")    " << RED << "[belum tuntas| " << data->getKRS()->get(0)->getMutuChar() << "]" << RESET << endl;
                                 }
                                 for(int i = 1; i < data->getKRS()->size(); i++){
                                     if(data->getKRS()->get(i)->getMutuDouble() >= 1){
-                                        cout << "                     " << i+1 << ". " << data->getKRS()->get(i)->getMatkul()->getNama() << " (" << data->getKRS()->get(i)->getId() << ")    [tuntas|" << data->getKRS()->get(i)->getMutuChar() << "]" << endl;
+                                        cout << "                       " << i+1 << ". " << data->getKRS()->get(i)->getMatkul()->getNama() << " (" << data->getKRS()->get(i)->getId() << ")    " << GREEN << "[tuntas|" << data->getKRS()->get(i)->getMutuChar() << "]" << RESET << endl;
                                     }else{
-                                        cout << "                     " << i+1 << ". " << data->getKRS()->get(i)->getMatkul()->getNama() << " (" << data->getKRS()->get(i)->getId() << ")    [belum tuntas| " << data->getKRS()->get(i)->getMutuChar() << "]" << endl;
+                                        cout << "                       " << i+1 << ". " << data->getKRS()->get(i)->getMatkul()->getNama() << " (" << data->getKRS()->get(i)->getId() << ")    " << RED << "[belum tuntas| " << data->getKRS()->get(i)->getMutuChar() << "]" << RESET << endl;
                                     }
                                 }
                             }
                             cout << endl;
 
-                            cout << "------------------------------------" << endl;
-                            cout << "1. Edit" << endl;
-                            cout << "2. Delete" << endl;
-                            cout << "3. Print" << endl;
-                            cout << "0. Kembali" << endl;
+                            cout << "------------------------------------------------------------------------------------------------------------" << endl;
+                            cout << YELLOW << "1. Edit" << endl;
+                            cout << RED << "2. Delete" << endl;
+                            cout << GREEN << "3. Print" << endl;
+                            cout << RED << "0. Kembali" << RESET << endl;
                             cout << ">> ";
                             
                             cin >> opt;
                             if(opt == 1){
+                                banner();
+                                cout << MAGENTA << "<<" << RESET << " EDIT DATA MAHASISWA " << MAGENTA << ">>" << RESET << endl << endl;
                                 cin.clear();
                                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
                                 string nama, nim;
                                 int gender;
-                                cout << "|| Kosongkan Jika Tidak Ingin Mengedit ||" << endl;
-                                cout << "Nama [" << data->getNama() << "]: ";
+                                cout << YELLOW << "|| Kosongkan Jika Tidak Ingin Mengedit ||" << RESET << endl << endl;
+                                cout << CYAN << "+ " << RESET << "Nama [" << YELLOW << data->getNama() << RESET << "]: ";
                                 getline(cin, nama);
-                                if(!isLen(nama)) cout << endl << "Data nama gagal diupdate!" << endl << endl;
+                                if(!isLen(nama)) cout << endl << RED << "| Data nama gagal diupdate! |" << RESET << endl << endl;
                                 else if(nama.length() > 45){
                                     nama = nama.substr(0, 45);
                                     data->setNama(nama);
-                                    cout << endl << "Input maksimal 45 karakter!" << endl << endl;
+                                    cout << endl << YELLOW << "| Input maksimal 45 karakter! |" << RESET << endl << endl;
                                 }else{
                                     data->setNama(nama);
                                     cout << endl;
                                 }
 
-                                cout << "|| Kosongkan Jika Tidak Ingin Mengedit ||" << endl;
-                                cout << "NIM [" << data->getId() << "]: ";
+                                cout << YELLOW << "|| Kosongkan Jika Tidak Ingin Mengedit ||" << RESET << endl << endl;
+                                cout << CYAN << "+ " << RESET << "NIM [" << YELLOW << data->getId() << RESET << "]: ";
                                 getline(cin, nim);
-                                if(!isLen(nim)) cout << endl << "Data NIM gagal diupdate!" << endl << endl;
-                                else if(!isId(nim)) cout << endl << "Input harus merupakan format nim (ex: X0123456)!" << endl << "Data NIM gagal diupdate!" << endl << endl;
-                                else if(mhs->searchElem(nim)) cout << endl << "NIM sudah pernah digunakan!" << endl << "Data NIM gagal diupdate!" << endl << endl;
+                                if(!isLen(nim)) cout << endl << RED << "| Data NIM gagal diupdate! |" << RESET << endl << endl;
+                                else if(!isId(nim)) cout << endl << RED << "| Input harus merupakan format nim (ex: X0123456)! |" << endl << "Data NIM gagal diupdate!" << RESET << endl << endl;
+                                else if(mhs->searchElem(nim)) cout << endl << RED << "| NIM sudah pernah digunakan! |" << endl << "Data NIM gagal diupdate!" << RESET << endl << endl;
                                 else if(nim.length() > 15){
                                     nim = nim.substr(0, 15);
                                     data->setNama(nim);
-                                    cout << endl << "Input maksimal 15 karakter!" << endl << endl;
+                                    cout << endl << YELLOW << "| Input maksimal 15 karakter! |" << RESET << endl << endl;
                                 }else{
                                     data->setNama(nim);
                                     cout << endl;
                                 }
 
-                                cout << "|| Kosongkan Jika Tidak Ingin Mengedit ||" << endl;
-                                cout << "Jenis Kelamin [" << ((data->getJk() == 'L') ? "Laki-laki" : "Perempuan") << "]: " << endl;
+                                cout << YELLOW << "|| Kosongkan Jika Tidak Ingin Mengedit ||" << RESET << endl << endl;
+                                cout << CYAN << "+ " << RESET << "Jenis Kelamin [" << ((data->getJk() == 'L') ? "Laki-laki" : "Perempuan") << "]: " << endl;
                                 string str;
                                 int temp;
                                 cout << "Pilih Jenis Kelamin:" << endl; 
-                                cout << "1. Laki-laki \t2. Perempuan" << endl;
+                                cout << BLUE << "(1)" << RESET << " Laki-laki \n";
+                                cout << MAGENTA << "(2)" << RESET << " Perempuan" << endl;
                                 cout << ">> ";
                                 getline(cin, str);
                                 if(isNum(str) && !&str) temp = stoi(str);
                                 else temp = (data->getJk() == 'L') ? 1 : 2;
-                                if(temp != 1 && temp != 2) cout << endl << "Input tidak valid!" << endl << endl ;
+                                if(temp != 1 && temp != 2) cout << endl << RED << "| Input tidak valid! |" << RESET << endl << endl ;
                                 else{
                                     if(temp == 1) gender = 'L';
                                     else gender = 'P';
@@ -343,22 +386,22 @@ int main(){
                                     cout << endl;
                                 }
 
-                                cout << "|| Kosongkan Jika Tidak Ingin Mengedit ||" << endl;
+                                cout << YELLOW << "|| Kosongkan Jika Tidak Ingin Mengedit ||" << RESET << endl << endl;
                                 myVector<dosen> *list_dosen = lec->inorder(lec->get_root());
                                 int dosbing = -1, qt = list_dosen->size();
-                                cout << "Pilih Dosen Pembimbing:" << endl;
+                                cout << CYAN << "+ " << RESET << "Pilih Dosen Pembimbing:" << endl;
                                 for(int i = 0; i < qt; i++){
                                     if(data->getDosbing() && list_dosen->get(i)->getId() == data->getDosbing()->getId()) {
                                         dosbing = i+1;
-                                        cout << i+1 << ". " << list_dosen->get(i)->getNama() << " (" << list_dosen->get(i)->getId() << ")  -> dosen pembimbing" << endl;
+                                        cout << BLUE << i+1 << ". " << RESET << list_dosen->get(i)->getNama() << " (" << list_dosen->get(i)->getId() << ")" << GREEN << "  -> dosen pembimbing" << RESET << endl;
                                     }
-                                    else cout << i+1 << ". " << list_dosen->get(i)->getNama() << " (" << list_dosen->get(i)->getId() << ")" << endl;
+                                    else cout << BLUE << i+1 << ". " << RESET << list_dosen->get(i)->getNama() << " (" << list_dosen->get(i)->getId() << ")" << endl;
                                 }
                                 if(!data->getDosbing()){
-                                    cout << "<< status: belum punya dosen pembimbing >>" << endl << endl;
+                                    cout << YELLOW << "<< status: belum punya dosen pembimbing >>" << RESET << endl << endl;
                                 }else{
                                     cout << "0. hapus dosen pembimbing" << endl;
-                                    cout << "<< status: dosen pembimbing kamu saat ini " << data->getDosbing()->getNama() << " (" << data->getDosbing()->getId() << ") >>" << endl << endl;
+                                    cout << GREEN << "<< status: dosen pembimbing kamu saat ini " << data->getDosbing()->getNama() << " (" << data->getDosbing()->getId() << ") >>" << RESET << endl << endl;
                                 } 
     
                                 cout << ">> ";
@@ -373,34 +416,34 @@ int main(){
                                 bool taken[1024] = {0};
                                 
                                 while(true){
-                                    cout << "Daftar Mata Kuliah:" << endl;
+                                    cout << CYAN << "+ " << RESET << "Daftar Mata Kuliah:" << endl;
                                     for(int i = 0; i < (qt+1)/2; i++){
                                         if(taken[i+1] || data->getKRS()->search(list_course->get(i)->getId())){
                                             taken[i+1] = true;
-                                            cout << i+1 << ". " << list_course->get(i)->getNama() << " (" << list_course->get(i)->getId() << "|" << list_course->get(i)->getSKS() << ") -> diambil";
+                                            cout << BLUE << i+1 << ". " << RESET << list_course->get(i)->getNama() << " (" << list_course->get(i)->getId() << "|" << list_course->get(i)->getSKS() << ")" << GREEN << " -> diambil" << RESET;
                                             for(int j = 0; j < (max_matkul_len - ((i < 9 ? 3 : 4) + list_course->get(i)->getNama().length() + 2 + list_course->get(i)->getId().length() + 15)); j++)
                                                 cout << " ";
                                         }else{
                                             taken[i+1] = false;
-                                            cout << i+1 << ". " << list_course->get(i)->getNama() << " (" << list_course->get(i)->getId() << "|" << list_course->get(i)->getSKS() << ")";
+                                            cout << BLUE << i+1 << ". " << RESET << list_course->get(i)->getNama() << " (" << list_course->get(i)->getId() << "|" << list_course->get(i)->getSKS() << ")";
                                             for(int j = 0; j < (max_matkul_len - ((i < 9 ? 3 : 4) + list_course->get(i)->getNama().length() + 2 + list_course->get(i)->getId().length() + 4)); j++)
                                                 cout << " ";
                                         }
                                         if(i+((qt+1)/2) < qt){
                                             if(taken[i+((qt+1)/2)+1] || data->getKRS()->search(list_course->get(i+((qt+1)/2))->getId())){
                                                 taken[i+((qt+1)/2)+1] = true;
-                                                cout << i+((qt+1)/2)+1 << ". " << list_course->get(i+((qt+1)/2))->getNama() << " (" << list_course->get(i+((qt+1)/2))->getId() << "|" << list_course->get(i+((qt+1)/2))->getSKS() << ") -> diambil" << endl;
+                                                cout << BLUE << i+((qt+1)/2)+1 << ". " << RESET << list_course->get(i+((qt+1)/2))->getNama() << " (" << list_course->get(i+((qt+1)/2))->getId() << "|" << list_course->get(i+((qt+1)/2))->getSKS() << ") " << GREEN << "-> diambil" << RESET << endl;
                                             }
                                             else{
                                                 taken[i+((qt+1)/2)+1] = false;
-                                                cout << i+((qt+1)/2)+1 << ". " << list_course->get(i+((qt+1)/2))->getNama() << " (" << list_course->get(i+((qt+1)/2))->getId() << "|" << list_course->get(i+((qt+1)/2))->getSKS() <<")" << endl;
+                                                cout << BLUE << i+((qt+1)/2)+1 << ". " << RESET << list_course->get(i+((qt+1)/2))->getNama() << " (" << list_course->get(i+((qt+1)/2))->getId() << "|" << list_course->get(i+((qt+1)/2))->getSKS() <<")" << endl;
                                             }
                                         }
                                     }
                                     cout << endl << endl;
 
                                     int opt;
-                                    cout << "1. ambil\t2. hapus\t0. selesai" << endl;
+                                    cout << GREEN << "1. tambah" << RED << "\t2. hapus\t0. selesai" << RESET << endl;
                                     cout << ">> ";
                                     cin >> opt;
                                     if(opt == 1){
@@ -416,7 +459,10 @@ int main(){
 
                                         double mutu;
                                         string val;
-                                        cout << endl << "| BL | A | AB | B | BC | C | D | E |" << endl << "Masukkan Nilai Mutu: ";
+                                        cout << endl << "|(BL)|" << DARK_GREEN << "(A)" << RESET << "|" << GREEN << "(AB)" <<  RESET << "|";
+                                        cout << DARK_YELLOW << "(B)" <<  RESET << "|" << DARK_YELLOW << "(BC)" << RESET << "|";
+                                        cout << YELLOW << "(C)" << RESET << "|";
+                                        cout << RED << "(D)" <<  RESET << "|" << RED << "(E)" << RESET << "|" << endl << CYAN << "+ " << RESET << "Masukkan Nilai Mutu: ";
                                         cin >> val;
                                         cout << endl;
                                         if(val != "A" && val != "AB" && val != "B" && val != "BC" && val != "C" && val != "D" && val != "E" && val != "BL"){
@@ -428,7 +474,7 @@ int main(){
                                             data->addKRS(temp);
                                             taken[opt_matkul] = true;
                                         }else{
-                                            cout << endl << "Mata Kuliah Sudah Diambil" << endl << endl;
+                                            cout << endl << YELLOW << "| Mata Kuliah Sudah Diambil |" << RESET << endl << endl;
                                             cin.clear();
                                             cin.ignore(numeric_limits<streamsize>::max(), '\n');
                                         }
@@ -443,73 +489,79 @@ int main(){
                                             taken[opt_matkul] = false;
                                             data->deleteKRS(list_course->get(opt_matkul-1)->getId());
                                         } else{
-                                            cout << endl << "Mata Kuliah Belum Diambil" << endl << endl;
+                                            cout << endl << YELLOW << "| Mata Kuliah Belum Diambil |" << RESET << endl << endl;
                                             cin.clear();
                                             cin.ignore(numeric_limits<streamsize>::max(), '\n');
                                         }
                                     }else if(opt == 0){
                                         cin.clear();
                                         cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                                        cout << "Berhasil Meng-Update Data Mahasiswa!" << endl;
+                                        cout << GREEN << "| Berhasil Meng-Update Data Mahasiswa! |" << RESET << endl;
+                                        cout << YELLOW << "> MOHON TUNGGU!" << endl;
+                                        #ifdef _WIN32
+                                            Sleep(2000);
+                                        #else
+                                            sleep(2);
+                                        #endif
                                         break;
                                     }else{
                                         cin.clear();
                                         cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                                        cout << "Input tidak valid!" << endl;
+                                        cout << RED << "| Input tidak valid! |" << RESET << endl;
                                     }
                                     data->recount_IP();
                                 }
                             }else if(opt == 2){
                                 mhs->deleteElem(node);
                                 mhs_sorted->update_root(mhs_sorted->deleteNode(mhs_sorted->get_root(), mhs_sorted->searchNode(mhs_sorted->get_root(), data->getId())));
-                                cout << endl << "Data Mahasiswa berhasil dihapus!" << endl;
-                                break;
+                                banner();
+                                cout << endl << RED << "| Data Mahasiswa berhasil dihapus! |" << RESET << endl;
                                 cin.clear();
                                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                                break;
                             }else if(opt == 3){
-                                time_t currentTime = time(nullptr);
                                 myVector<string>* data_mhs = new myVector<string>();
                                 {
-                                string row = "Nama Lengkap       : " + data->getNama();
+                                string row = "+ Nama Lengkap       : " + data->getNama();
                                 data_mhs->push(&row);
                                 }
                                 {
-                                string row = "NIM                : " + data->getId();
+                                string row = "+ NIM                : " + data->getId();
                                 data_mhs->push(&row);
                                 }
                                 {
-                                string row = "Jenis Kelamin      : ";
+                                string row = "+ Jenis Kelamin      : ";
                                 row += ((data->getJk() == 'L') ? "Laki-laki" : "Perempuan");
                                 data_mhs->push(&row);
                                 }
                                 if(data->getDosbing()){
-                                    string row = "Dosen Pembimbing   : " + data->getDosbing()->getNama() + " (" + data->getDosbing()->getId() + ")";
+                                    string row = "+ Dosen Pembimbing   : " + data->getDosbing()->getNama() + " (" + data->getDosbing()->getId() + ")";
                                     data_mhs->push(&row);
                                 }else{
-                                    string row = "Dosen Pembimbing   : -";
+                                    string row = "+ Dosen Pembimbing   : -";
                                     data_mhs->push(&row);
                                 }
                                 {
-                                string row = "IP                 : " + to_string(data->getIP());
+                                string row = "+ IP                 : " + to_string(data->getIP());
                                 data_mhs->push(&row);
                                 }
                                 if(data->getKRS()->size() == 0){
-                                    string row = "KRS                : - ";
+                                    string row = "+ Rekapitulasi Studi : - ";
                                     data_mhs->push(&row);
                                 }else{
                                     if(data->getKRS()->get(0)->getMutuDouble() >= 1){
-                                        string row = "KRS                : 1. " + data->getKRS()->get(0)->getMatkul()->getNama() + " (" + data->getKRS()->get(0)->getId() + ")    [tuntas|" + data->getKRS()->get(0)->getMutuChar() + "]";
+                                        string row = "+ Rekapitulasi Studi : 1. " + data->getKRS()->get(0)->getMatkul()->getNama() + " (" + data->getKRS()->get(0)->getId() + ")    [tuntas|" + data->getKRS()->get(0)->getMutuChar() + "]";
                                         data_mhs->push(&row);
                                     }else{
-                                        string row = "KRS                : 1. " + data->getKRS()->get(0)->getMatkul()->getNama() + " (" + data->getKRS()->get(0)->getId() + ")    [belum tuntas"+ data->getKRS()->get(0)->getMutuChar() + "]";
+                                        string row = "+ Rekapitulasi Studi : 1. " + data->getKRS()->get(0)->getMatkul()->getNama() + " (" + data->getKRS()->get(0)->getId() + ")    [belum tuntas"+ data->getKRS()->get(0)->getMutuChar() + "]";
                                         data_mhs->push(&row);
                                     }
                                     for(int i = 1; i < data->getKRS()->size(); i++){
                                         if(data->getKRS()->get(i)->getMutuDouble() >= 1){
-                                            string row = "                     " + to_string(i+1) + ". " + data->getKRS()->get(i)->getMatkul()->getNama() + " (" + data->getKRS()->get(i)->getId() + ")    [tuntas|" + data->getKRS()->get(i)->getMutuChar() + "]";
+                                            string row = "                       " + to_string(i+1) + ". " + data->getKRS()->get(i)->getMatkul()->getNama() + " (" + data->getKRS()->get(i)->getId() + ")    [tuntas|" + data->getKRS()->get(i)->getMutuChar() + "]";
                                             data_mhs->push(&row);
                                         }else{
-                                            string row = "                     " + to_string(i+1) + ". " + data->getKRS()->get(i)->getMatkul()->getNama() + " (" + data->getKRS()->get(i)->getId() + ")    [belum tuntas|" + data->getKRS()->get(i)->getMutuChar() + "]";
+                                            string row = "                       " + to_string(i+1) + ". " + data->getKRS()->get(i)->getMatkul()->getNama() + " (" + data->getKRS()->get(i)->getId() + ")    [belum tuntas|" + data->getKRS()->get(i)->getMutuChar() + "]";
                                             data_mhs->push(&row);
                                         }
                                     }
@@ -519,55 +571,125 @@ int main(){
                                 #else
                                     mkdir("data_txt", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
                                 #endif
-                                writeTo(data_mhs, "data_txt/" + data->getId() + "_" + to_string(currentTime), "txt");
-                                cout << "Berhasil Mencetak Data!!" << endl;
-                                cout << "Silahkan Cek File \"data_txt/" + data->getId() + "_" + to_string(currentTime) + ".txt\"" << endl;
+                                time_t currentTime = time(nullptr);
+                                string filename = "data_txt/all_mahasiswa_" + to_string(currentTime);
+                                writeTo(data_mhs, filename, "txt");
+                                banner();
+                                cout << GREEN << "| Berhasil Mencetak Data |" << RESET << endl;
+                                cout << YELLOW << "> Silahkan Cek File \"" << RED << filename << ".txt" << YELLOW << "\"" << RESET << endl;
+                                cout << YELLOW << "> Tutup file untuk kembali!" << endl;
+                                string command = "gedit " + filename + ".txt";
+                                system(command.c_str());
+                                banner();
                                 cin.clear();
                                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
                                 break;
                             }else if(opt != 0){
                                 cin.clear();
                                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                                cout << "Input tidak valid!" << endl;
+                                banner();
+                                cout << "| Input tidak valid! |" << endl;
                             }else{
+                                banner();
                                 break;
                             }
                         }
                     }else{
-                        cout << "Mahasiswa tidak ditemukan" << endl;
+                        banner();
+                        cout << endl << YELLOW << "| Mahasiswa tidak ditemukan! |" << RESET << endl << endl;
                     }
                 }catch (exception& e) {
-                    #ifdef _WIN32
-                        system("cls");
-                    #else
-                        system("clear");
-                    #endif
-                    cout << endl << "Input Error!" << endl << endl;
+                    banner();
+                    cout << endl << RED << "WARNING: Input Error!" << RESET << endl << endl;
                     cin.clear();
                     cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 }
-                cout << endl << " ====== Tekan \"Q\" untuk kembali ke menu utama! ====== " << endl << endl;
             }
         }
         else if(input == "3"){
-            cout << "\t\t\t ========== Daftar Mahasiswa (SORTED by NIM) ==========" << endl;
-            myVector<mahasiswa>* all_mhs = mhs_sorted->inorder(mhs_sorted->get_root());
-            for(int i = 0; i < all_mhs->size(); i++){
-                cout << all_mhs->get(i)->getId();
-                for(int j = 0; j < 15-all_mhs->get(i)->getId().size(); j++) cout << " ";
-                cout << " | " << all_mhs->get(i)->getNama();
-                for(int j = 0; j < 45-all_mhs->get(i)->getNama().size(); j++) cout << " ";
-                printf(" | %.2f", all_mhs->get(i)->getIP());
-                if(all_mhs->get(i)->getDosbing()){
-                    cout << " | " << all_mhs->get(i)->getDosbing()->getNama();
-                    cout << " (" << all_mhs->get(i)->getDosbing()->getId() << ")" << endl;
-                }else{
-                    cout << " | - " << endl;
+            while(true){
+                banner();
+                cout << MAGENTA << "<<" << RESET << " Daftar Seluruh Mahasiswa " << MAGENTA << ">>" << RESET << endl;
+                myVector<mahasiswa>* all_mhs = mhs_sorted->inorder(mhs_sorted->get_root());
+                cout << "| NIM             | NAMA                                          | IP   | DOSEN PEMBIMBING " << endl;
+                cout << "|-----------------|-----------------------------------------------|------|--------------------------------" << endl;
+                for(int i = 0; i < all_mhs->size(); i++){
+                    cout << "| " << all_mhs->get(i)->getId();
+                    for(int j = 0; j < 15-all_mhs->get(i)->getId().size(); j++) cout << " ";
+                    cout << " | " << all_mhs->get(i)->getNama();
+                    for(int j = 0; j < 45-all_mhs->get(i)->getNama().size(); j++) cout << " ";
+                    printf(" | %.2f", all_mhs->get(i)->getIP());
+                    if(all_mhs->get(i)->getDosbing()){
+                        cout << " | " << all_mhs->get(i)->getDosbing()->getNama();
+                        cout << " (" << all_mhs->get(i)->getDosbing()->getId() << ")" << endl;
+                    }else{
+                        cout << " | - " << endl;
+                    }
                 }
+                cout << endl << "Jumlah Seluruh Mahasiswa: " << mhs->getSize() << endl << endl;
+                int opt;
+                cout << GREEN << "1. print" << RESET << endl;
+                cout << RED << "0. kembali" << RESET << endl;
+                cout << ">> ";
+                cin >> opt;
+                if(opt == 1){
+                    myVector<string>* data_mhs = new myVector<string>();
+                    {
+                    string first_row = "| NIM             | NAMA                                          | IP   | DOSEN PEMBIMBING ";
+                    data_mhs->push(&first_row);
+                    }
+                    {
+                    string first_row = "|-----------------|-----------------------------------------------|------|--------------------------------";
+                    data_mhs->push(&first_row);
+                    }
+                    for(int i = 0; i < all_mhs->size(); i++){
+                        string row = "| ";
+                        row += all_mhs->get(i)->getId();
+                        for(int j = 0; j < 15-all_mhs->get(i)->getId().size(); j++) row += " ";
+                        row += " | " + all_mhs->get(i)->getNama();
+                        for(int j = 0; j < 45-all_mhs->get(i)->getNama().size(); j++) row += " ";
+                        row += " | ";
+                        string strValue = to_string(all_mhs->get(i)->getIP());
+                        row += strValue.substr(0, 4);
+                        if(all_mhs->get(i)->getDosbing()){
+                            row += " | " + all_mhs->get(i)->getDosbing()->getNama();
+                            row += " (" + all_mhs->get(i)->getDosbing()->getId() + ")";
+                        }else{
+                            row += " | - ";
+                        }
+                        data_mhs->push(&row);
+                    }
+                    #ifdef _WIN32
+                        CreateDirectory("data_txt", NULL);
+                    #else
+                        mkdir("data_txt", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+                    #endif
+                    time_t currentTime = time(nullptr);
+                    string filename = "data_txt/all_mahasiswa_" + to_string(currentTime);
+                    writeTo(data_mhs, filename, "txt");
+                    banner();
+                    cout << GREEN << "| Berhasil Mencetak Data |" << RESET << endl;
+                    cout << YELLOW << "> Silahkan Cek File \"" << RED << filename << ".txt" << YELLOW << "\"" << RESET << endl;
+                    cout << YELLOW << "> Tutup file untuk kembali ke menu utama!" << endl;
+                    string command = "gedit " + filename + ".txt";
+                    system(command.c_str());
+                    banner();
+                    cin.clear();
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                    break;
+                }else if(opt == 0){
+                    banner();
+                    cin.clear();
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                    break;
+                }else{
+                    banner();
+                }
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
             }
-            cout << endl << "Jumlah Seluruh Mahasiswa: " << mhs->getSize() << endl << endl;
         }
-        else if(input == "4"){
+        else if(input == "0"){
             cout << endl << "Terima Kasih Sudah Mencoba!\n" << endl;
             myVector<mahasiswa>* all_mhs = mhs_sorted->inorder(mhs_sorted->get_root());
             myVector<string>* all_mhs_str = new myVector<string>();
@@ -578,6 +700,7 @@ int main(){
                 row += all_mhs->get(i)->getJk();
                 row += ";";
                 if(all_mhs->get(i)->getDosbing()) row += all_mhs->get(i)->getDosbing()->getId() + ";";
+                else row += "-;";
                 for(int j = 0; j < all_mhs->get(i)->getKRS()->size() ; j++){
                     row += all_mhs->get(i)->getKRS()->get(j)->getId()+ "(" + all_mhs->get(i)->getKRS()->get(j)->getMutuChar() + ")" + ";";
                 }
@@ -612,19 +735,12 @@ int main(){
             writeTo(all_mat_str, "database/matkul", "csv");
             #ifdef _WIN32
                 Sleep(3000);
-                system("cls");
             #else
                 sleep(3);
-                system("clear");
             #endif
+            clear_terminal();
 
             break;
-        }else if(input == "cls" || input == "clear"){
-            #ifdef _WIN32
-                system("cls");
-            #else
-                system("clear");
-            #endif
         }else{
             cout << "Input tidak valid" << endl << endl;
         }

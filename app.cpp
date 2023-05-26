@@ -187,10 +187,16 @@ int main(){
             char gender;
             int dosbing, krs;
 
+            cout << YELLOW << "\n ====== Tekan \"" << RED << "Q" << YELLOW << "\" untuk batalkan input! ====== " << RESET << endl << endl;
+            bool cancel = false;
             while(true){
                 cout << BLUE << "+" << RESET << " Masukkan Nama: ";
                 cin.ignore();
                 getline(cin, name);
+                if(name == "Q" || name == "q"){
+                    cancel = true;
+                    break;
+                }
                 if(!isLen(name)) cout << RED << endl << "| Input nama minimal mengandung 3 karakter! |" << RESET << endl << endl;
                 else if(name.length() > 45){
                     name = name.substr(0, 45);
@@ -201,10 +207,20 @@ int main(){
                     break;
                 }
             }
+
+            if(cancel){
+                banner();
+                cout << RED << "| Input mahasiswa dibatalkan |" << RESET << endl << endl;
+                continue;
+            }
             
             while(true){
                 cout << BLUE << "+" << RESET << " Masukkan NIM: ";
                 getline(cin, nim);
+                if(nim == "Q" || nim == "q"){
+                    cancel = true;
+                    break;
+                }
                 if(!isLen(nim)) cout << RED << endl << "| Input nama minimal mengandung 3 karakter! |" << RESET << endl << endl;
                 else if(!isId(nim)) cout << RED << endl << "| Input harus merupakan format nim (ex: X0123456)! |" << RESET << endl << endl;
                 else if(mhs->searchElem(nim)) cout << RED << endl << "| NIM sudah pernah digunakan! |" << RESET << endl << endl;
@@ -217,6 +233,14 @@ int main(){
                     break;
                 }
             }
+
+            if(cancel){
+                banner();
+                cout << RED << "| Input mahasiswa dibatalkan |" << RESET << endl << endl;
+                continue;
+            }
+
+            cout << YELLOW << "WARNING: Input data mahasiswa sudah tidak bisa dibatalkan" << endl << endl;
 
             while(true){
                 int temp;
@@ -367,8 +391,7 @@ int main(){
                                     cout << endl;
                                 }
 
-                                cout << YELLOW << "|| Kosongkan Jika Tidak Ingin Mengedit ||" << RESET << endl << endl;
-                                cout << CYAN << "+ " << RESET << "Jenis Kelamin [" << ((data->getJk() == 'L') ? "Laki-laki" : "Perempuan") << "]: " << endl;
+                                cout << CYAN << "+ " << RESET << "Jenis Kelamin [" << YELLOW << ((data->getJk() == 'L') ? "Laki-laki" : "Perempuan") << RESET << "]: " << endl;
                                 string str;
                                 int temp;
                                 cout << "Pilih Jenis Kelamin:" << endl; 
@@ -376,7 +399,7 @@ int main(){
                                 cout << MAGENTA << "(2)" << RESET << " Perempuan" << endl;
                                 cout << ">> ";
                                 getline(cin, str);
-                                if(isNum(str) && !&str) temp = stoi(str);
+                                if(isNum(str)) temp = stoi(str);
                                 else temp = (data->getJk() == 'L') ? 1 : 2;
                                 if(temp != 1 && temp != 2) cout << endl << RED << "| Input tidak valid! |" << RESET << endl << endl ;
                                 else{
@@ -386,9 +409,8 @@ int main(){
                                     cout << endl;
                                 }
 
-                                cout << YELLOW << "|| Kosongkan Jika Tidak Ingin Mengedit ||" << RESET << endl << endl;
                                 myVector<dosen> *list_dosen = lec->inorder(lec->get_root());
-                                int dosbing = -1, qt = list_dosen->size();
+                                int dosbing = 0, qt = list_dosen->size();
                                 cout << CYAN << "+ " << RESET << "Pilih Dosen Pembimbing:" << endl;
                                 for(int i = 0; i < qt; i++){
                                     if(data->getDosbing() && list_dosen->get(i)->getId() == data->getDosbing()->getId()) {
@@ -400,14 +422,16 @@ int main(){
                                 if(!data->getDosbing()){
                                     cout << YELLOW << "<< status: belum punya dosen pembimbing >>" << RESET << endl << endl;
                                 }else{
-                                    cout << "0. hapus dosen pembimbing" << endl;
+                                    cout << RED << "0. " << RESET << "hapus dosen pembimbing" << endl;
                                     cout << GREEN << "<< status: dosen pembimbing kamu saat ini " << data->getDosbing()->getNama() << " (" << data->getDosbing()->getId() << ") >>" << RESET << endl << endl;
                                 } 
     
                                 cout << ">> ";
                                 string opsi;
                                 getline(cin, opsi);
-                                if(isNum(opsi) && (&str || str == "0") && stoi(opsi) >= 0 && stoi(opsi) <= qt) dosbing = stoi(opsi);
+                                
+                                if(isNum(opsi) && stoi(opsi) >= 0 && stoi(opsi) <= qt) dosbing = stoi(opsi);
+                                else dosbing = 0;
                                 data->setDosbing(list_dosen->get(dosbing-1));
                                 cout << endl;
 
@@ -572,7 +596,7 @@ int main(){
                                     mkdir("data_txt", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
                                 #endif
                                 time_t currentTime = time(nullptr);
-                                string filename = "data_txt/all_mahasiswa_" + to_string(currentTime);
+                                string filename = "data_txt/" + data->getId() + "_" + to_string(currentTime);
                                 writeTo(data_mhs, filename, "txt");
                                 banner();
                                 cout << GREEN << "| Berhasil Mencetak Data |" << RESET << endl;
@@ -600,7 +624,8 @@ int main(){
                     }
                 }catch (exception& e) {
                     banner();
-                    cout << endl << RED << "WARNING: Input Error!" << RESET << endl << endl;
+                    cout << endl << RED << "> WARNING: Input Error!" << RESET << endl << endl;
+                    cout << endl << YELLOW << "> Enter untuk kembali ke manu!" << RESET << endl << endl;
                     cin.clear();
                     cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 }

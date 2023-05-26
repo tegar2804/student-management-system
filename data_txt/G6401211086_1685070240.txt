@@ -1,0 +1,8 @@
++ Nama Lengkap       : abcdefgh
++ NIM                : G6401211086
++ Jenis Kelamin      : Laki-laki
++ Dosen Pembimbing   : -
++ IP                 : 3.750000
++ Rekapitulasi Studi : 1. Pertanian Inovatif (IPB10C)    [tuntas|AB]
+                       2. Berpikir Komputasional (KOM1102)    [tuntas|A]
+                       3. Biologi Dasar (BIO1102)    [belum tuntas|BL]

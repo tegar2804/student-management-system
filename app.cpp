@@ -742,7 +742,8 @@ int main(){
 
             break;
         }else{
-            cout << "Input tidak valid" << endl << endl;
+            banner();
+            cout << RED << "| Input tidak valid |" << endl << endl;
         }
     }
     

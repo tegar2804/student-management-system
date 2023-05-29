@@ -45,6 +45,7 @@ void clear_terminal(){
     #endif
 }
 
+// Print Banner
 void banner(){
     clear_terminal();
     cout << BLUE << "\t\t=========================================================================" << endl;
@@ -58,7 +59,7 @@ void banner(){
     cout << endl;
 }
 
-
+// Print menu Utama
 void menu(){
     cout << MAGENTA << "<<" << RESET << " MENU UTAMA " << MAGENTA << ">>" << RESET << endl;
     cout << CYAN << "1) " << RESET << "Masukkan Data Mahasiswa" << endl;
@@ -68,6 +69,7 @@ void menu(){
     cout << "Masukkan input anda: " << endl;
 }
 
+// Cek apakah string panjangnya > 4
 bool isLen(string line){
     if(line.length() > 4){
         return true;
@@ -75,6 +77,7 @@ bool isLen(string line){
     return false;
 }
 
+// Cek apakah string hanya mengandung angka
 bool isNum(string line){
     for( int i = 0; i < line.length(); i++ ) {
         if( !isdigit( line[i] )) {
@@ -84,6 +87,7 @@ bool isNum(string line){
     return true;
 }
 
+// Cek apakah string merupakan format NIM (ID)
 bool isId(string line){
     if(isupper(line[0]) != 0 && isNum(line.substr(1,line.length()-1))){
         return true;
@@ -91,6 +95,7 @@ bool isId(string line){
     return false;
 }
 
+// Baca file 'fname' yang akan dimasukan ke vector of string dua dimensi yang merepresentasikan baris dan kolom
 myVector<myVector<string>> *readFile(char* fname){
     myVector<myVector<string>> *table = new myVector<myVector<string>>();  // Menyimpan table dari file CSV
 
@@ -114,6 +119,8 @@ myVector<myVector<string>> *readFile(char* fname){
     return table;
 }
 
+// nulis ke 'dest' dengan format 'type', 
+// dimana elemen vector of string nya merepresentasikan tiap line/baris yang akan ditulis di file
 void writeTo(myVector<string>* data, string dest, string type){
     ofstream file(dest+"."+type);
 
@@ -126,24 +133,25 @@ void writeTo(myVector<string>* data, string dest, string type){
                                              
 int main(){
     banner();
+
+    // Buat hashmap utk mhs dan avl tree untuk mhs, dosen, dan matkul
     hashmap *mhs = new hashmap();
     avl<dosen> *lec = new avl<dosen>();
     avl<matkul> *course = new avl<matkul>();
     avl<mahasiswa> *mhs_sorted = new avl<mahasiswa>();
     
-    // baca dari database dosen
+    // baca dari database (.csv) dosen, buat object, dan masukkan ke avl tree dosen
     string file = "database/dosen.csv";
     myVector<myVector<string>>* table = readFile(&file[0]);
     for(int i = 0; i < table->size(); i++){
         dosen *temp = new dosen(*table->get(i)->get(0), *table->get(i)->get(1), (*table->get(i)->get(2))[0]);
         lec->update_root(lec->insert(lec->get_root(), temp));
     }
-    
     int max_matkul_len = 0;
-    // baca dari database matkul
+
+    // baca dari database (.csv) matkul, buat object, dan masukkan ke avl tree matkul
     file = "database/matkul.csv";
     table = readFile(&file[0]);
-
     for(int i = 0; i < table->size(); i++){
         // gak penting
         if((4 + table->get(i)->get(0)->length() + 2 + table->get(i)->get(1)->length() + 15) > max_matkul_len) max_matkul_len = 4 + table->get(i)->get(0)->length() + 2 + table->get(i)->get(1)->length() + 15;
@@ -152,7 +160,7 @@ int main(){
         course->update_root(course->insert(course->get_root(), temp));
     }
 
-    // baca dari database mahasiswa
+    // baca dari database (.csv) mahasiswa, buat object, masukkan ke hashmap dan avl tree mhs
     file = "database/mahasiswa.csv";
     table = readFile(&file[0]);
     for(int i = 0; i < table->size(); i++){ 

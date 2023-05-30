@@ -56,10 +56,7 @@ class mahasiswa
         mahasiswa();
         mahasiswa(std::string, std::string, char, dosen*, myVector<transkrip>*);
         void recount_IP();
-        void setNama(std::string);
-        void setId(std::string);
-        void setGender(char);
-        void setDosbing(dosen*);
+        void update(std::string, std::string, char, dosen*);
         std::string getId();
         std::string getNama();
         void addKRS(transkrip*);

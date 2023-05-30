@@ -19,6 +19,7 @@
 #define WHITE   "\033[37;1m"
 
 #include <iostream>
+#include <vector>
 #include <cstdlib>
 #include <stdlib.h>
 #include <fstream>
@@ -130,10 +131,10 @@ void writeTo(myVector<string>* data, string dest, string type){
 
     file.close();
 }
-                                             
+                               
 int main(){
     banner();
-
+    auto start = chrono::high_resolution_clock::now();
     // Buat hashmap utk mhs dan avl tree untuk mhs, dosen, dan matkul
     hashmap *mhs = new hashmap();
     avl<dosen> *lec = new avl<dosen>();
@@ -293,11 +294,7 @@ int main(){
                     cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 }
             }
-
             mahasiswa *val = new mahasiswa(name, nim, gender, list_dosen->get(dosbing-1), new myVector<transkrip>());
-            mhs->insertElem(val);
-            mhs_sorted->update_root(mhs_sorted->insert(mhs_sorted->get_root(), val));
-
             cout << GREEN << "| Berhasil Menambahkan Data Mahasiswa! |" << endl << endl;
             cout << YELLOW << "> MOHON TUNGGU!" << endl;
             #ifdef _WIN32
@@ -370,33 +367,37 @@ int main(){
                                 cout << MAGENTA << "<<" << RESET << " EDIT DATA MAHASISWA " << MAGENTA << ">>" << RESET << endl << endl;
                                 cin.clear();
                                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                                string nama, nim;
-                                int gender;
+                                string nama = "", nim = "";
+                                char gender;
                                 cout << YELLOW << "|| Kosongkan Jika Tidak Ingin Mengedit ||" << RESET << endl << endl;
                                 cout << CYAN << "+ " << RESET << "Nama [" << YELLOW << data->getNama() << RESET << "]: ";
                                 getline(cin, nama);
-                                if(!isLen(nama)) cout << endl << RED << "| Data nama gagal diupdate! |" << RESET << endl << endl;
-                                else if(nama.length() > 45){
+                                if(!isLen(nama)){
+                                    cout << endl << RED << "| Data nama gagal diupdate! |" << RESET << endl << endl;
+                                    nama = "";
+                                }else if(nama.length() > 45){
                                     nama = nama.substr(0, 45);
-                                    data->setNama(nama);
                                     cout << endl << YELLOW << "| Input maksimal 45 karakter! |" << RESET << endl << endl;
                                 }else{
-                                    data->setNama(nama);
                                     cout << endl;
                                 }
 
                                 cout << YELLOW << "|| Kosongkan Jika Tidak Ingin Mengedit ||" << RESET << endl << endl;
                                 cout << CYAN << "+ " << RESET << "NIM [" << YELLOW << data->getId() << RESET << "]: ";
                                 getline(cin, nim);
-                                if(!isLen(nim)) cout << endl << RED << "| Data NIM gagal diupdate! |" << RESET << endl << endl;
-                                else if(!isId(nim)) cout << endl << RED << "| Input harus merupakan format nim (ex: X0123456)! |" << endl << "Data NIM gagal diupdate!" << RESET << endl << endl;
-                                else if(mhs->searchElem(nim)) cout << endl << RED << "| NIM sudah pernah digunakan! |" << endl << "Data NIM gagal diupdate!" << RESET << endl << endl;
-                                else if(nim.length() > 15){
+                                if(!isLen(nim)){
+                                    cout << endl << RED << "| Data NIM gagal diupdate! |" << RESET << endl << endl;
+                                    nim = "";
+                                }else if(!isId(nim)){
+                                    cout << endl << RED << "| Input harus merupakan format nim (ex: X0123456)! |" << endl << "Data NIM gagal diupdate!" << RESET << endl << endl;
+                                    nim = "";
+                                }else if(mhs->searchElem(nim)){
+                                    cout << endl << RED << "| NIM sudah pernah digunakan! |" << endl << "Data NIM gagal diupdate!" << RESET << endl << endl;
+                                    nim = "";
+                                }else if(nim.length() > 15){
                                     nim = nim.substr(0, 15);
-                                    data->setNama(nim);
                                     cout << endl << YELLOW << "| Input maksimal 15 karakter! |" << RESET << endl << endl;
                                 }else{
-                                    data->setNama(nim);
                                     cout << endl;
                                 }
 
@@ -414,7 +415,6 @@ int main(){
                                 else{
                                     if(temp == 1) gender = 'L';
                                     else gender = 'P';
-                                    data->setGender(gender);
                                     cout << endl;
                                 }
 
@@ -441,8 +441,8 @@ int main(){
                                 
                                 if(isNum(opsi) && stoi(opsi) >= 0 && stoi(opsi) <= qt) dosbing = stoi(opsi);
                                 else dosbing = 0;
-                                data->setDosbing(list_dosen->get(dosbing-1));
                                 cout << endl;
+                                data->update(nama, nim, gender, list_dosen->get(dosbing-1));
 
                                 myVector<matkul> *list_course = course->inorder(course->get_root());
                                 qt = list_course->size();
@@ -548,7 +548,7 @@ int main(){
                                 mhs->deleteElem(node);
                                 mhs_sorted->update_root(mhs_sorted->deleteNode(mhs_sorted->get_root(), mhs_sorted->searchNode(mhs_sorted->get_root(), data->getId())));
                                 banner();
-                                cout << endl << RED << "| Data Mahasiswa berhasil dihapus! |" << RESET << endl;
+                                cout << endl << RED << "| Data Mahasiswa berhasil dihapus! |" << RESET << endl << endl;
                                 cin.clear();
                                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
                                 break;
@@ -649,8 +649,9 @@ int main(){
         else if(input == "3"){
             while(true){
                 banner();
-                cout << MAGENTA << "<<" << RESET << " Daftar Seluruh Mahasiswa " << MAGENTA << ">>" << RESET << endl;
                 myVector<mahasiswa>* all_mhs = mhs_sorted->inorder(mhs_sorted->get_root());
+                
+                cout << MAGENTA << "<<" << RESET << " Daftar Seluruh Mahasiswa " << MAGENTA << ">>" << RESET << endl;
                 cout << "| NIM             | NAMA                                          | IP   | DOSEN PEMBIMBING " << endl;
                 cout << "|-----------------|-----------------------------------------------|------|--------------------------------" << endl;
                 for(int i = 0; i < all_mhs->size(); i++){

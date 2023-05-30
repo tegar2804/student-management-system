@@ -36,18 +36,6 @@ void hashmap::deleteElem(Node<mahasiswa>* hapus){
     size--;
 }
 
-void hashmap::updateName(Node<mahasiswa>* node, string name){
-    node->data->setNama(name);
-}
-
-void hashmap::updateGender(Node<mahasiswa>* node, char jk){
-    node->data->setGender(jk);
-}
-
 int hashmap::getSize(){
     return size;
 }
-
-// void hashmap::updateDosbing(Node<mahasiswa>* node){
-//     node->data->setNama(name);
-// }

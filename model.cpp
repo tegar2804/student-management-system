@@ -111,22 +111,12 @@ mahasiswa::mahasiswa(string name, string nim, char jk, dosen* lec, myVector<tran
     this->recount_IP();
 }
 
-void mahasiswa::setNama(string name){
-    nama = name;
-}
-
-void mahasiswa::setId(string nim){
-    id = nim;
-}
-
-void mahasiswa::setGender(char jk){
+void mahasiswa::update(string name, string nim, char jk, dosen* lec){
+    if(name != "") nama = name;
+    if(nim != "") id = nim;
     gender = jk;
-}
-
-void mahasiswa::setDosbing(dosen* lec){
     dosbing = lec;
 }
-
 
 string mahasiswa::getId(){
     return id;

@@ -72,7 +72,7 @@ void menu(){
 
 // Cek apakah string panjangnya > 4
 bool isLen(string line){
-    if(line.length() > 4){
+    if(line.length() >= 4){
         return true;
     }
     return false;
@@ -207,7 +207,7 @@ int main(){
                     cancel = true;
                     break;
                 }
-                if(!isLen(name)) cout << RED << endl << "| Input nama minimal mengandung 3 karakter! |" << RESET << endl << endl;
+                if(!isLen(name)) cout << RED << endl << "| Input nama minimal mengandung 4 karakter! |" << RESET << endl << endl;
                 else if(name.length() > 45){
                     name = name.substr(0, 45);
                     cout << YELLOW << endl << "| Input hanya menerima 45 karakter pertama! |" << RESET << endl << endl;
@@ -295,6 +295,9 @@ int main(){
                 }
             }
             mahasiswa *val = new mahasiswa(name, nim, gender, list_dosen->get(dosbing-1), new myVector<transkrip>());
+            mhs->insertElem(val);
+            mhs_sorted->update_root(mhs_sorted->insert(mhs_sorted->get_root(), val));
+
             cout << GREEN << "| Berhasil Menambahkan Data Mahasiswa! |" << endl << endl;
             cout << YELLOW << "> MOHON TUNGGU!" << endl;
             #ifdef _WIN32

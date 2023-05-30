@@ -1,8 +1,0 @@
-+ Nama Lengkap       : Muhammad Tegar Santoso
-+ NIM                : G6401211086
-+ Jenis Kelamin      : Laki-laki
-+ Dosen Pembimbing   : Lorem ipsum (P6401211069)
-+ IP                 : 3.75
-+ Rekapitulasi Studi : 1. Pertanian Inovatif (IPB10C)    [tuntas|AB]
-                       2. Berpikir Komputasional (KOM1102)    [tuntas|A]
-                       3. Biologi Dasar (BIO1102)    [belum tuntas|BL]
